@@ -1,16 +1,15 @@
 package jm.task.core.jdbc.service;
 
+import jm.task.core.jdbc.dao.UserDao;
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
 import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
 import jm.task.core.jdbc.model.User;
-import jm.task.core.jdbc.util.Util;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    UserDaoJDBCImpl userDaoJDBC = new UserDaoJDBCImpl();
+    UserDao userDaoJDBC = new UserDaoHibernateImpl();
 
     public void createUsersTable() {
        userDaoJDBC.createUsersTable();
@@ -24,7 +23,6 @@ public class UserServiceImpl implements UserService {
        userDaoJDBC.saveUser(name, lastName, age);
     }
 
-
     public void removeUserById(long id) {
      userDaoJDBC.removeUserById(id);
     }
@@ -32,7 +30,6 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         return userDaoJDBC.getAllUsers();
     }
-
 
     public void cleanUsersTable() {
         userDaoJDBC.cleanUsersTable();

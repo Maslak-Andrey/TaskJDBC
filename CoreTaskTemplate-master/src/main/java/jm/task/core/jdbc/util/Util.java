@@ -1,4 +1,12 @@
 package jm.task.core.jdbc.util;
+import jm.task.core.jdbc.model.User;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,14 +20,14 @@ public class Util {
     private static final String PASSWORD = "roottoo";
 
     // init connection object
-    private Connection connection;
+    private static Connection connection;
 
     // connect database
-    public Connection connect() {
+    public static Connection connect() {
         if (connection == null) {
             try {
                 Class.forName(DATABASE_DRIVER);
-                connection = DriverManager.getConnection(DATABASE_URL, USERNAME,PASSWORD);
+                connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
             }
@@ -28,7 +36,7 @@ public class Util {
     }
 
     // disconnect database
-    public void disconnect() {
+    public static void disconnect() {
         if (connection != null) {
             try {
                 connection.close();
@@ -37,5 +45,24 @@ public class Util {
                 e.printStackTrace();
             }
         }
+    }
+
+    //connect to Hibernate
+    private static final SessionFactory sessionFactory = buildSessionFactory();
+    private static SessionFactory buildSessionFactory(){
+        try{
+            return new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex){
+            System.err.println("SessionFactory creation filed." +ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
+
+    public static SessionFactory getSessionFactory(){
+        return sessionFactory;
+    }
+
+    public static void shutdown(){
+        getSessionFactory().close();
     }
 }
